@@ -1,6 +1,28 @@
 {
-  "dependencies": {
-    "@actions/core": "^1.6.0",
-    "@actions/github": "^5.0.0"
-  }
+    "name": "kudo-team-parser-action",
+    "version": "1.0.0",
+    "description": "GitHub Actions to parse Issues and PRs and adding labels for kudo.",
+    "main": "index.js",
+    "dependencies": {
+        "@actions/core": "^1.6.0",
+        "@actions/github": "^5.0.0"
+    },
+    "devDependencies": {},
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/do3-2021/kudo-team-parser-action.git"
+    },
+    "author": "@lucido-simon",
+    "maintainers": [
+        "@lucido-simon",
+        "@iverly"
+    ],
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/do3-2021/kudo-team-parser-action/issues"
+    },
+    "homepage": "https://github.com/do3-2021/kudo-team-parser-action#readme"
 }
