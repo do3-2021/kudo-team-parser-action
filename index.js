@@ -35,6 +35,15 @@ try {
                 labels
             });
         }
+
+        body = body.split('\n').slice(8).join('\n');
+
+        client.rest.issues.update({
+            owner: github.context.repo.owner,
+            repo: github.context.repo.repo,
+            issue_number: github.context.issue.number,
+            body
+        });
     }
 
     else {
