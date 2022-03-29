@@ -20,7 +20,7 @@ try {
                 if ( !Array.isArray(acc) )
                     return array[currentIndex+2].split(',').map( (label) => label.trim().toLowerCase());
                 else {
-                    array[currentIndex+2].split(',').foreach( (label) => acc.push(label.trim().toLowerCase()));
+                    array[currentIndex+2].split(',').forEach( (label) => acc.push(label.trim().toLowerCase()));
                     return acc;
                 }
             }
