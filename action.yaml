@@ -1,0 +1,9 @@
+name: 'Team Parser'
+description: 'Parses issues and PRs for teams and labels Issue/PR Accordingly'
+inputs:
+  github_token:  # id of input
+    description: Github token
+    required: true
+runs:
+  using: 'node16'
+  main: 'index.js'
