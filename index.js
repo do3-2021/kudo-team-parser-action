@@ -18,11 +18,9 @@ try {
         let labels = body.split('\n').reduce( (acc, curr, currentIndex, array) => {
             console.log(`Current line: ${curr}`);
             console.log(`Current labels: ${acc}`);
-            if ( curr.includes("Which teams are related") ) {
-                return acc.push(array[currentIndex+2].split(',').map( (label) => label.trim().toLowerCase() ));
-            }
-            else if ( curr.includes("Is it a team issue or a project issue") ) {
-                return acc.push(array[currentIndex+2].split(',').map( (label) => label.trim().toLowerCase() ));
+            if ( curr.includes("Which teams are related") || curr.includes("Is it a team issue or a project issue")) {
+                acc.push(array[currentIndex+2].split(',').map( (label) => label.trim().toLowerCase() ));
+                return acc;
             }
             else return acc;
             }, []);
