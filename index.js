@@ -19,10 +19,10 @@ try {
             console.log(`Current line: ${curr}`);
             console.log(`Current labels: ${acc}`);
             if ( curr.includes("Which teams are related") ) {
-                return [array[currentIndex+2].split(',').map( (label) => label.trim() ), ...acc];
+                return acc.push(array[currentIndex+2].split(',').map( (label) => label.trim().toLowerCase() ));
             }
             else if ( curr.includes("Is it a team issue or a project issue") ) {
-                return [array[currentIndex+2].split(',').map( (label) => label.trim() ), ...acc];
+                return acc.push(array[currentIndex+2].split(',').map( (label) => label.trim().toLowerCase() ));
             }
             else return acc;
             }, []);
