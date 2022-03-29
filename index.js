@@ -13,23 +13,19 @@ try {
 
         let body = bodyIssue || bodyPullRequest;
 
-        let labels = body.split('\n').reduce( (acc, curr) => {
+        
+
+        let labels = body.split('\n').reduce( (acc, curr, currentIndex, array) => {
             console.log(`Current line: ${curr}`);
             console.log(`Current labels: ${acc}`);
             if ( curr.includes("Which teams are related") ) {
-                console.log(`Returning null`);
-                return null;
+                return [array[currentIndex+2].split(',').map( (label) => label.trim() ), ...acc];
             }
-            else if ( acc === null ) {
-                return [];
-            }
-            else if ( Array.isArray( acc ) && acc.length == 0 ) {
-                console.log(`Returning ${curr.split(',').map( (item) => item.trim().toLowerCase() )}`);
-                return curr.split(',').map( (item) => item.trim().toLowerCase() );
+            else if ( curr.includes("Is it a team issue or a project issue") ) {
+                return [array[currentIndex+2].split(',').map( (label) => label.trim() ), ...acc];
             }
             else return acc;
-            }, undefined);
-        
+            }, []);
 
         if ( labels ) {
             client.rest.issues.addLabels({
