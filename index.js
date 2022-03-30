@@ -32,9 +32,13 @@ const findLabelsInBody = (body) => {
     const labels = body.split('\n').reduce((acc, curr, currentIndex, array) => {
         if (curr.includes("Which teams are related") || curr.includes("Is it a team issue or a project issue")) {
             if (!Array.isArray(acc))
-                return array[currentIndex+2].split(',').map((label) => label.trim().toLowerCase());
+            // Adds "team" to the beginning of the label if it is a team, replaces spaces with dashes
+                return array[currentIndex+2].split(',').map((label) => 
+                    ((label.includes("Project issue") || label.includes("Team issue") ? "" : "team/" ) + label.trim().toLowerCase().replace(/ /g, '-')));
             else {
-                array[currentIndex+2].split(',').forEach((label) => acc.push(label.trim().toLowerCase()));
+            // Adds "team" to the beginning of the label if it is a team, replaces spaces with dashes
+                array[currentIndex+2].split(',').forEach((label) => acc.push(                    
+                    ((label.includes("Project issue") || label.includes("Team issue") ? "" : "team/" ) + label.trim().toLowerCase().replace(/ /g, '-'))));
                 return acc;
             }
         } else {
@@ -48,7 +52,9 @@ const findLabelsInBody = (body) => {
 const parseTaskList = (taskList) => {
     return taskList.reduce((previous, current) => {
         if (current.includes('- [x]')) {
-            previous.push(current.replace('- [x]', '').trim());
+            // Adds "team" to the beginning of the label if it is a team, replaces spaces with dashes
+            previous.push((current.includes("Project PR") || current.includes("Team PR") ? "" : "team/" ) 
+                + current.replace('- [x]', '').trim().toLowerCase().replace(/ /g, '-'));
         }
         return previous;
     }, []);
