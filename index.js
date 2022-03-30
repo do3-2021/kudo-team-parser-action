@@ -1,10 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 
-let requestBody;
-let finalBody;
-let number;
-
 const githubToken = core.getInput("github_token");
 const client = github.getOctokit(githubToken);
 
@@ -25,7 +21,7 @@ const getIssueBody = (context) => {
         return null;
     }
     
-    return issue.body;          
+    return issue.body;
 }
 
 const findLabelsInBody = (body) => {
@@ -33,12 +29,12 @@ const findLabelsInBody = (body) => {
         return [];
     }
 
-    const labels = body.split('\n').reduce( (acc, curr, currentIndex, array) => {
-        if ( curr.includes("Which teams are related") || curr.includes("Is it a team issue or a project issue")) {
-            if ( !Array.isArray(acc) )
-                return array[currentIndex+2].split(',').map( (label) => label.trim().toLowerCase());
+    const labels = body.split('\n').reduce((acc, curr, currentIndex, array) => {
+        if (curr.includes("Which teams are related") || curr.includes("Is it a team issue or a project issue")) {
+            if (!Array.isArray(acc))
+                return array[currentIndex+2].split(',').map((label) => label.trim().toLowerCase());
             else {
-                array[currentIndex+2].split(',').forEach( (label) => acc.push(label.trim().toLowerCase()));
+                array[currentIndex+2].split(',').forEach((label) => acc.push(label.trim().toLowerCase()));
                 return acc;
             }
         } else {
@@ -58,8 +54,8 @@ const parseTaskList = (taskList) => {
     }, []);
 }
 
-const addLabels = (labels) => {
-    if ( labels ) {
+const addLabels = (labels, requestBody, number) => {
+    if (labels) {
         client.rest.issues.addLabels({
             ...requestBody,
             issue_number: number,
@@ -70,30 +66,15 @@ const addLabels = (labels) => {
 
 const parsePRBody = (body) => {
     const lines = body.split('\n');
-    return [
-    lines[3].trim().toLowerCase(), 
-    lines[4].trim().toLowerCase(), 
-    lines[7].trim().toLowerCase(), 
-    lines[8].trim().toLowerCase(), 
-    lines[9].trim().toLowerCase(), 
-    lines[10].trim().toLowerCase(), 
-    lines[11].trim().toLowerCase()];
+    return [...lines.slice(3, 5), ...lines.slice(7, 12)].map(line => line.trim().toLowerCase());
 }
 
-const removeHead = (issue = true) => {
-    if ( issue ) {
-        client.rest.issues.update({
-            ...requestBody,
-            issue_number: number,
-            body: finalBody
-        });
-    } else {
-        client.rest.pulls.update({
-            ...requestBody,
-            pull_number: number,
-            body: finalBody
-        });
-    }
+const removeHead = (requestBody, number, finalBody) => {
+    client.rest.issues.update({
+        ...requestBody,
+        issue_number: number,
+        body: finalBody
+    });
 }
 
 try {
@@ -103,8 +84,11 @@ try {
 
     if (body) {
         let labels;
-
-        if ( issueBody ) {
+        let requestBody;
+        let finalBody;
+        let number;
+        
+        if (issueBody) {
             labels = findLabelsInBody(body);
             requestBody = {
                 owner: github.context.repo.owner,
@@ -112,7 +96,7 @@ try {
             };
 
             number = github.context.issue.number;
-            finalBody = body.split('\n').slice(8).join('\n'); 
+            finalBody = body.split('\n').slice(8).join('\n');
         } else {
             console.log(`parsedBody : ${parsePRBody(prBody)}`);
             labels = parseTaskList(parsePRBody(prBody));
@@ -125,10 +109,8 @@ try {
             finalBody = body.split('\n').slice(12).join('\n');
         }
 
-        addLabels(labels);
-        removeHead();
-
-
+        addLabels(labels, requestBody, number);
+        removeHead(requestBody, number, finalBody);
     } else {
         core.setFailed("No body found");
     }
