@@ -51,11 +51,10 @@ const findLabelsInBody = (body) => {
 
 const parseTaskList = (taskList) => {
     return taskList.reduce((previous, current) => {
-        if (current.includes('- [x]')) {
+        if (current.includes('- [x]')) 
             // Adds "team" to the beginning of the label if it is a team, replaces spaces with dashes
-            previous.push((current.includes("Project PR") || current.includes("Team PR") ? "" : "team/" ) 
-                + current.replace('- [x]', '').trim().toLowerCase().replace(/ /g, '-'));
-        }
+            previous.push( (current.includes("project pr") || current.includes("team pr") ? "" : "team/" ) + current.replace('- [x]', '').trim().replace(/ /g, '-'));
+        
         return previous;
     }, []);
 }
@@ -72,7 +71,7 @@ const addLabels = (labels, requestBody, number) => {
 
 const parsePRBody = (body) => {
     const lines = body.split('\n');
-    return [...lines.slice(3, 5), ...lines.slice(7, 12)].map(line => line.trim().toLowerCase());
+    return lines.slice(1, 11).map(line => line.trim().toLowerCase());
 }
 
 const removeHead = (requestBody, number, finalBody) => {
